@@ -2,8 +2,9 @@
 
 const key = '__REDUX_DEVTOOLS_EXTENSION__'
 const ReduxDevTools = typeof window !== 'undefined' && window[key] ? window[key] : null
+const broadcasters = {}
 
-export default function connectReduxDevTools(name, store) {
+export default function connectReduxDevTools(name, store, options) {
 
   if (!ReduxDevTools) return
 
@@ -12,15 +13,23 @@ export default function connectReduxDevTools(name, store) {
     name = 'App'
   }
 
-  const options = { serialize: true }
-  const broadcaster = ReduxDevTools.connect({ name })
+  let broadcaster
 
-  broadcaster.init(store.getState())
+  if (broadcasters[name]) {
+    broadcaster = broadcasters[name]
+  } else {
+    broadcaster = broadcasters[ name ] = ReduxDevTools.connect({ name })
+  }
+
+  broadcaster.init(store.state)
 
   store.broadcast = (store, key, props) => broadcaster.send(
     { type: key, props },
-    store.getState(),
-    options,
+    store.state,
+    {
+      serialize: true,
+      ...options
+    },
     key
   )
 
