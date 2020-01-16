@@ -9,13 +9,23 @@ const storeProps = {
   state: {
     count: 0
   },
+  // ..or..
+  createState: () => ({ count: 0 }),
+
   actions: {
-    increment(store, props) {
+    // Use any [key] for action, can be async
+    increment(store, props = 1) {
+      // Produce new state using immer
       store.setState({
-        count: store.state.count + (props || 1)
+        count: store.state.count + props
       })
-    }
+      // ..or..
+      store.setState(draft => {
+        draft.count += props
+      })
+    },
   },
+  
   // Optional
   onSetState(store) {},
   onAction(store, actionName, actionProps) {},
@@ -23,9 +33,9 @@ const storeProps = {
 
 const store = createStore(storeProps)
 
-store.increment(5)
+store.increment(5) // store.state.count === 5
 
-// store.state.count === 5
+store.state.count++ // Error, must use setState or action
 ```
 
 ## Child stores
@@ -34,6 +44,7 @@ store.increment(5)
 const store = createStore({
   ...storeProps,
   stores: {
+    // Use any [key] for child store
     child: storeProps
   }
 })
@@ -53,9 +64,9 @@ const storeProps = {
     count: 0
   },
   actions: {
-    increment(store, props) {
-      store.setState({
-        count: store.state.count + (props || 1)
+    increment(store, props = 1) {
+      store.setState(draft => {
+        draft.count += props
       })
     }
   },
