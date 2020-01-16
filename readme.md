@@ -8,25 +8,35 @@ Manage state and actions using [`immer`](https://github.com/immerjs/immer)
 import createStore from 'medux'
 
 const storeProps = {
+
   state: {
     count: 0
   },  
+
   actions: {
     increment(store, props = 1) {
       
+      const currentState = store.state
+
       // Produce new state
 
       store.setState(draft => {
         draft.count += props
       })
+
+      // Optionally call other actions
+      store.action()
     },
+
     // Action can be async
     async action(store, props) {}
   },
   
   // Optional
   onSetState(store) {},
-  onAction(store, actionName, actionProps) {},
+  onAction(store, key, props) {
+    console.log(`store.${key}`, props, store.state)
+  },
 }
 
 const store = createStore(storeProps)
@@ -41,7 +51,7 @@ const oldState = store.state
 
 store.increment(5)
 
-const newState = store.getState() // oldState !== newState
+const newState = store.state // oldState !== newState
 
 store.state.count++ // Error, must use setState or action
 ```
@@ -53,13 +63,11 @@ const store = createStore({
   ...storeProps,
   stores: {
     // Use any [key] for child store
-    child: storeProps
+    child: childStoreProps
   }
 })
 
-store.child.increment(5)
-
-// store.state.child.count === 5
+store.child.increment(5) // store.state.child.count === 5
 ```
 
 ## React

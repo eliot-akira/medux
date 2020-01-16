@@ -34,10 +34,7 @@ const withStore = (storeProps = {}) => TargetComponent => {
           : stateReference
         ,
         actions,
-        onAction(store, key, props) {
-          console.log(`store.${key}`, props)
-          onAction && onAction(store, key, props)
-        },
+        onAction,
         onSetState: (store, update = true) => {
           stateReference = store.state
           const done = () => update && onSetState && onSetState(store, this.props)
