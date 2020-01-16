@@ -110,9 +110,12 @@ export default withStore(storeProps)(Component)
 ```js
 import connectReduxDevTools from 'medux/react/redux-devtools'
 
+connectReduxDevTools('Store name', store)
+
+// With React
 const storeProps = {
   didMount(store) {
-    connectReduxDevTools('Store name', store)
+    connectReduxDevTools('Component name', store)
   }
 }
 ```
