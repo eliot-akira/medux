@@ -96,3 +96,17 @@ const storeProps = {
   }
 }
 ```
+
+## Develop
+
+For developing this library
+
+```sh
+yarn # Install dependencies
+
+yarn dev # Develop: Watch files, recompile and test on changes
+
+yarn build # Build
+
+npm run release # Publish to NPM
+```
