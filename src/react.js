@@ -9,53 +9,56 @@ const lifeCycleHooks = {
   willUpdate: 'componentWillUpdate'
 }
 
-const withStore = (storeProps = {}) => TargetComponent => class StatefulComponent extends Component {
+const withStore = (storeProps = {}) => TargetComponent => {
 
-  constructor(props) {
+  const {
+    createState,
+    actions = {},
+    onAction,
+    onSetState,
+    stores = {},
+    ...extendedProps
+  } = storeProps
 
-    super(props)
+  let stateReference = storeProps.state
 
-    const {
-      createState,
-      actions = {},
-      onAction,
-      onSetState,
-      stores = {},
-      ...extendedProps
-    } = storeProps
+  return class StatefulComponent extends Component {
 
-    let stateReference = storeProps.state
+    constructor(props) {
 
-    this.store = createStore({
-      createState: (store) => createState
-        ? createState(store, this.props)
-        : stateReference
-      ,
-      actions,
-      onAction(store, key, props) {
-        console.log(`store.${key}`, props)
-        onAction && onAction(store, key, props)
-      },
-      onSetState: (store, update = true) => {
-        stateReference = store.state
-        const done = () => update && onSetState && onSetState(store, this.props)
-        update && this.setState({}, done) // Re-render
-      },
-      stores
-    })
+      super(props)
 
-    Object.keys(extendedProps).forEach(key => {
-      if (!lifeCycleHooks[key]) return
-      this[ lifeCycleHooks[key] ] = (...args) => extendedProps[key](
-        this.store,
-        this.props,
-        ...args
-      )
-    })
-  }
+      this.store = createStore({
+        createState: (store) => createState
+          ? createState(store, this.props)
+          : stateReference
+        ,
+        actions,
+        onAction(store, key, props) {
+          console.log(`store.${key}`, props)
+          onAction && onAction(store, key, props)
+        },
+        onSetState: (store, update = true) => {
+          stateReference = store.state
+          const done = () => update && onSetState && onSetState(store, this.props)
+          update && this.setState({}, done) // Re-render
+        },
+        stores
+      })
 
-  render() {
-    return <TargetComponent {...this.props} store={this.store} />
+      Object.keys(extendedProps).forEach(key => {
+        if (!lifeCycleHooks[key]) return
+        this[ lifeCycleHooks[key] ] = (...args) => extendedProps[key](
+          this.store,
+          this.props,
+          ...args
+        )
+      })
+    }
+
+    render() {
+      return <TargetComponent {...this.props} store={this.store} />
+    }
   }
 }
 
