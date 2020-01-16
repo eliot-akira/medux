@@ -1,5 +1,7 @@
 # Medux: Modular immutable state management
 
+Manage state and actions using [`immer`](https://github.com/immerjs/immer)
+
 ## Store
 
 ```js
@@ -8,18 +10,13 @@ import createStore from 'medux'
 const storeProps = {
   state: {
     count: 0
-  },
-  // ..or..
-  createState: () => ({ count: 0 }),
-
+  },  
   actions: {
-    // Use any [key] for action, can be async
+    // Action can be async    
     increment(store, props = 1) {
-      // Produce new state using immer
-      store.setState({
-        count: store.state.count + props
-      })
-      // ..or..
+      
+      // Produce new state
+
       store.setState(draft => {
         draft.count += props
       })
@@ -34,6 +31,16 @@ const storeProps = {
 const store = createStore(storeProps)
 
 store.increment(5) // store.state.count === 5
+```
+
+### Immutability
+
+```js
+const oldState = store.state
+
+store.increment(5)
+
+const newState = store.getState() // oldState !== newState
 
 store.state.count++ // Error, must use setState or action
 ```
@@ -60,9 +67,12 @@ store.child.increment(5)
 import withStore from 'medux/react'
 
 const storeProps = {
-  state: {
-    count: 0
-  },
+
+  state: { count: 0 },
+
+  // To create fresh state every mount, use instead of state
+  createState: () => ({ count: 0 }),
+
   actions: {
     increment(store, props = 1) {
       store.setState(draft => {
@@ -97,16 +107,29 @@ const storeProps = {
 }
 ```
 
-## Develop
+## Develop this library
 
-For developing this library
+Install dependencies
 
 ```sh
-yarn # Install dependencies
+yarn
+```
 
-yarn dev # Develop: Watch files, recompile and test on changes
+Develop: Watch files, recompile and test on changes
 
-yarn build # Build
+```sh
+yarn dev
+```
 
-npm run release # Publish to NPM
+Build
+
+```sh
+yarn build
+```
+
+Publish to NPM
+
+
+```sh
+npm run release
 ```
