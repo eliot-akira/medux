@@ -1,4 +1,4 @@
-# Modular immutable state management
+# Medux: Modular immutable state management
 
 ## Store
 

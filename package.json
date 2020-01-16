@@ -1,7 +1,7 @@
 {
   "name": "medux",
   "version": "0.1.0",
-  "description": "Modular immutable state management",
+  "description": "Medux: Modular immutable state management",
   "main": "index.js",
   "scripts": {
     "dev": "babel src --out-dir build --watch & sleep 3 && nodemon --watch build build/test",
