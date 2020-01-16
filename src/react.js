@@ -46,7 +46,7 @@ const withStore = (storeProps = {}) => TargetComponent => {
       Object.keys(extendedProps).forEach(key => {
         if (!lifeCycleHooks[key]) return
         this[ lifeCycleHooks[key] ] = (...args) => extendedProps[key](
-          this.store,
+          this.props.store || this.store, // Allow parent to override store
           this.props,
           ...args
         )
@@ -54,7 +54,10 @@ const withStore = (storeProps = {}) => TargetComponent => {
     }
 
     render() {
-      return <TargetComponent {...this.props} store={this.store} />
+      return <TargetComponent {...{
+        store: this.store,
+        ...this.props // Allow parent to override store
+      }} />
     }
   }
 }
