@@ -19,9 +19,8 @@ export default function connectReduxDevTools(name, store, options) {
     broadcaster = broadcasters[name]
   } else {
     broadcaster = broadcasters[ name ] = ReduxDevTools.connect({ name })
+    broadcaster.init(store.state)
   }
-
-  broadcaster.init(store.state)
 
   store.broadcast = (store, key, props) => broadcaster.send(
     { type: key, props },
