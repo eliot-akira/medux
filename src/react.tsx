@@ -1,4 +1,8 @@
 import React, { Component } from 'react'
+import {
+  State,
+  Store, StoreProps,
+} from './types'
 import createStore from './index'
 
 const lifeCycleHooks = {
@@ -9,7 +13,7 @@ const lifeCycleHooks = {
   willUpdate: 'componentWillUpdate'
 }
 
-const withStore = (storeProps = {}) => TargetComponent => {
+const withStore = (storeProps: StoreProps = {}) => TargetComponent => {
 
   const {
     createState,
@@ -23,6 +27,9 @@ const withStore = (storeProps = {}) => TargetComponent => {
   let stateReference = storeProps.state
 
   return class StatefulComponent extends Component {
+
+    public store: Store
+    public props: any
 
     constructor(props) {
 

@@ -1,6 +1,10 @@
 import immer from 'immer'
+import {
+  State,
+  Store, StoreProps,
+} from './types'
 
-const createStore = (storeProps = {}) => {
+const createStore = (storeProps: StoreProps = {}) => {
 
   const {
     createState,
@@ -13,8 +17,9 @@ const createStore = (storeProps = {}) => {
 
   let stateReference = storeProps.state || {}
 
-  const store = {
-    getState: () => store.state,
+  const store: Store = {
+    state: {}, // Will be created after actions are bound
+    getState: (): State => store.state,
     setState: (newState, update = true) => {
 
       // Immutable state updates
@@ -38,7 +43,7 @@ const createStore = (storeProps = {}) => {
     }
   }
 
-  const actionMiddleware = (key, props, result) => {
+  const actionMiddleware = (key: string, props: any, result: any): any => {
 
     const done = () => {
       if (onAction) {
@@ -61,7 +66,7 @@ const createStore = (storeProps = {}) => {
   }
 
   Object.keys(actions).forEach(key => {
-    store[key] = props => actionMiddleware(
+    store[key] = (props: any): any => actionMiddleware(
       key,
       props,
       actions[key](store, props)
@@ -82,7 +87,7 @@ const createStore = (storeProps = {}) => {
   // Child stores
 
   const parentStore = store
-  const createChildStore = key => {
+  const createChildStore = (key: string) => {
 
     const childStoreProps = stores[key]
 
@@ -116,13 +121,16 @@ const createStore = (storeProps = {}) => {
       },
 
       onAction(childStore, childActionKey, actionProps) {
+
         // Notify parent store
-        const parentArgs = [parentStore, `${key}.${childActionKey}`, actionProps]
+
+        const parentActionKey = `${key}.${childActionKey}`
+
         if (onAction) {
-          onAction(...parentArgs)
+          onAction(parentStore, parentActionKey, actionProps)
         }
         if (parentStore.broadcast) {
-          parentStore.broadcast(...parentArgs)
+          parentStore.broadcast(parentStore, parentActionKey, actionProps)
         }
         if (childStoreProps.onAction) {
           childStoreProps.onAction(childStore, childActionKey, actionProps)

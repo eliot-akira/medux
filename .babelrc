@@ -5,7 +5,8 @@
         "node": "current"
       }
     }],
-    "@babel/preset-react"
+    "@babel/preset-react",
+    "@babel/preset-typescript"
   ],
   "plugins": [
     "babel-plugin-add-module-exports"

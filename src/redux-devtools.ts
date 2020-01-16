@@ -1,19 +1,26 @@
-// https://github.com/zalmoxisus/redux-devtools-extension/blob/master/docs/
+import { State, Store } from './types'
+
+declare var window: any
 
 const key = '__REDUX_DEVTOOLS_EXTENSION__'
 const ReduxDevTools = typeof window !== 'undefined' && window[key] ? window[key] : null
-const broadcasters = {}
 
-export default function connectReduxDevTools(name, store, options) {
+type Broadcaster = {
+  init: (state: State) => any,
+  send: (...args: any[]) => any
+}
+
+const broadcasters: {
+  [key: string]: Broadcaster
+} = {}
+
+export default function connectReduxDevTools(name: string, store: Store, options: any = {}) {
+
+  // https://github.com/zalmoxisus/redux-devtools-extension/blob/master/docs/
 
   if (!ReduxDevTools) return
 
-  if (!store) {
-    store = name
-    name = 'App'
-  }
-
-  let broadcaster
+  let broadcaster: Broadcaster
 
   if (broadcasters[name]) {
     broadcaster = broadcasters[name]
