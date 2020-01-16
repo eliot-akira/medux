@@ -18,9 +18,10 @@ const storeProps = {
       
       const currentState = store.state
 
-      // Produce new state
-
       store.setState(draft => {
+
+        // Produce new state by modifying draft
+
         draft.count += props
       })
 
@@ -28,11 +29,11 @@ const storeProps = {
       store.action()
     },
 
-    // Action can be async
+    // Actions can be async
     async action(store, props) {}
   },
   
-  // Optional
+  // Optional callbacks
   onSetState(store) {},
   onAction(store, key, props) {
     console.log(`store.${key}`, props, store.state)
@@ -41,7 +42,9 @@ const storeProps = {
 
 const store = createStore(storeProps)
 
-store.increment(5) // store.state.count === 5
+store.increment(5)
+
+console.log(store.state) // { count: 5 }
 ```
 
 ### Immutability
