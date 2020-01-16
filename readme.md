@@ -12,7 +12,6 @@ const storeProps = {
     count: 0
   },  
   actions: {
-    // Action can be async    
     increment(store, props = 1) {
       
       // Produce new state
@@ -21,6 +20,8 @@ const storeProps = {
         draft.count += props
       })
     },
+    // Action can be async
+    async action(store, props) {}
   },
   
   // Optional
@@ -80,6 +81,7 @@ const storeProps = {
       })
     }
   },
+  
   // Optional lifecycle methods, can be async
   didMount(store, props) {},
   willUnmount(store, props) {},
@@ -92,7 +94,7 @@ const Component = ({ store }) =>
     onClick={() => store.increment(5)}
   >Increment</button>
 
-export deafult withStore(storeProps)(Component)
+export default withStore(storeProps)(Component)
 ```
 
 ## Redux DevTools
