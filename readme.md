@@ -111,7 +111,7 @@ export default withStore(storeProps)(Component)
 ## Redux DevTools
 
 ```js
-import connectReduxDevTools from 'medux/react/redux-devtools'
+import connectReduxDevTools from 'medux/redux-devtools'
 
 connectReduxDevTools('Instance name', store)
 ```
