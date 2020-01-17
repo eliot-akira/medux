@@ -108,11 +108,9 @@ const storeProps = {
   didUpdate(store, props) {}
 }
 
-const Component = ({ store }) =>
-  <button
-    onClick={() => store.increment(5)}
-  >
-    Increment: { store.state.count }
+const Component = ({ store: { state, increment } }) =>
+  <button onClick={() => increment()}>
+    Increment: { state.count }
   </button>
 
 export default withStore(storeProps)(Component)
