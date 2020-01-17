@@ -7,6 +7,8 @@
     "dev": "babel src --out-dir build --extensions \".ts,.tsx\" --watch & sleep 3 && nodemon --watch build build/test",
     "build": "babel src --out-dir build --extensions \".ts,.tsx\"",
     "test": "node build/test",
+    "types": "tsc",
+    "clean": "rm -rf build",
     "release": "cp package.json build && cp readme.md build && cd build && npm publish"
   },
   "dependencies": {
@@ -20,7 +22,8 @@
     "@types/react": "^16.9.17",
     "babel-plugin-add-module-exports": "^1.0.2",
     "concurrently": "^5.0.2",
-    "nodemon": "^2.0.2"
+    "nodemon": "^2.0.2",
+    "typescript": "^3.7.5"
   },
   "license": "MIT",
   "author": "Eliot Akira",
