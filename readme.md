@@ -2,6 +2,12 @@
 
 Manage state and actions using [`immer`](https://github.com/immerjs/immer)
 
+## Getting Started
+
+```sh
+yarn add medux
+```
+
 ## Store
 
 ```js
