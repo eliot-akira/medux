@@ -111,7 +111,9 @@ const storeProps = {
 const Component = ({ store }) =>
   <button
     onClick={() => store.increment(5)}
-  >Increment</button>
+  >
+    Increment: { store.state.count }
+  </button>
 
 export default withStore(storeProps)(Component)
 ```
