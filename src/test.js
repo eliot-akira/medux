@@ -40,7 +40,7 @@ test('store', it => {
     'state', 'getState', 'setState'
   ]
 
-  properties.forEach(key => assert(`store.${key} exists`, store[key]))
+  properties.forEach(key => it(`store.${key} exists`, store[key]))
 })
 
 test('store.setState', it => {
