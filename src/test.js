@@ -92,6 +92,33 @@ test('onSetState', it => {
   it('is called on setState with fresh state', calledWithValue===1)
 })
 
+test('onAction', it => {
+
+  let called = false
+  let calledWithKey
+  let calledWithProps
+
+  const store = createStore({
+    state: { index: 0 },
+    actions: {
+      increment: (store, props) => store.setState(draft => {
+        draft.index += props
+      })
+    },
+    onAction(store, key, props) {
+      called = true
+      calledWithKey = key
+      calledWithProps = props
+    }
+  })
+
+  store.increment(2)
+
+  it('is called on action', called)
+  it('is called on action with key', calledWithKey==='increment')
+  it('is called on action with props', calledWithProps===2)
+})
+
 test('store[childStore]', it => {
 
   let called = false
@@ -119,13 +146,24 @@ test('store[childStore]', it => {
     }
   })
 
-  it('creates child store', store.child)
-  it('creates child store action', store.child.increment)
+  it('is created', store.child)
+  it('has state', store.child.state)
+  it('has actions', store.child.increment)
+  it('parent store state has child state', store.state.child)
+  it('parent and child stores have same child state reference', store.state.child===store.child.state)
+
+  const oldParentState = store.state
 
   store.child.increment()
 
+  const newParentState = store.state
+
+  it('action creates new parent state', oldParentState!==newParentState)
   it('action updates parent state', store.state.child.index===1)
   it('action does not affect unrelated parent state keys', store.state.index===0)
+
+  it('action updates child store state', store.child.state.index===1)
+  it('state update after action is shared by parent and child store', store.state.child===store.child.state)
 
   it('action calls child onSetState', childCalled)
   it('action calls parent onSetState', called)
