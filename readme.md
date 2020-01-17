@@ -76,7 +76,9 @@ const store = createStore({
   }
 })
 
-store.child.increment(5) // store.state.child.count === 5
+store.child.increment(5)
+
+console.log(store.state.child) // { count: 5 }
 ```
 
 ## React
