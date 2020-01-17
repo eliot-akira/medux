@@ -5,15 +5,20 @@ import {
 } from './types'
 import createStore from './index'
 
-const lifeCycleHooks = {
-  didMount: 'componentDidMount',
-  willUnmount: 'componentWillUnmount',
-  shouldUpdate: 'shouldComponentUpdate',
-  didUpdate: 'componentDidUpdate',
-  willUpdate: 'componentWillUpdate'
+export type LifeCycleMethod = (
+  store: Store,
+  props: { [key: string]: any },
+  ...args: any[]
+) => any
+
+export type LifeCycleMethods = {
+  didMount?: LifeCycleMethod
+  willUnmount?: LifeCycleMethod
+  shouldUpdate?: LifeCycleMethod
+  didUpdate?: LifeCycleMethod
 }
 
-const withStore = (storeProps: StoreProps = {}) => TargetComponent => {
+const withStore = (storeProps: StoreProps & LifeCycleMethods = {}) => TargetComponent => {
 
   const {
     createState,
@@ -21,7 +26,7 @@ const withStore = (storeProps: StoreProps = {}) => TargetComponent => {
     onAction,
     onSetState,
     stores = {},
-    ...extendedProps
+    ...lifecycleProps
   } = storeProps
 
   let stateReference = storeProps.state
@@ -49,15 +54,29 @@ const withStore = (storeProps: StoreProps = {}) => TargetComponent => {
         },
         stores
       })
+    }
 
-      Object.keys(extendedProps).forEach(key => {
-        if (!lifeCycleHooks[key]) return
-        this[ lifeCycleHooks[key] ] = (...args) => extendedProps[key](
-          this.props.store || this.store, // Allow parent to override store
-          this.props,
-          ...args
-        )
-      })
+    lifecycle = (key: string, ...args: any[]) => lifecycleProps[key] && lifecycleProps[key](
+      this.props.store || this.store, // Allow parent to override store
+      this.props,
+      ...args
+    )
+
+    componentDidMount(...args: any[]) {
+      this.lifecycle('didMount', ...args)
+    }
+
+    componentWillUnmount(...args: any[]) {
+      this.lifecycle('willUnmount', ...args)
+    }
+
+    shouldComponentUpdate(...args: any[]) {
+      if (!lifecycleProps.shouldUpdate) return true
+      return this.lifecycle('shouldUpdate', ...args)
+    }
+
+    componentDidUpdate(...args: any[]) {
+      this.lifecycle('didUpdate', ...args)
     }
 
     render() {
