@@ -8,7 +8,8 @@ const assert = (title, result) => {
   console.log(`  ${result ? '✓' : '✕'}`, title)
   results[ result ? 'success' : 'fail' ]++
 }
-const describe = (title, fn) => {
+
+const test = (title, fn) => {
   console.log(title)
   return fn(assert)
 }
@@ -21,18 +22,18 @@ const report = () => {
 
 // Tests
 
-describe('medux', it => {
+test('medux', it => {
   it('exports createStore', createStore)
 })
 
 
-describe('createStore', it => {
+test('createStore', it => {
   it('is a function', createStore instanceof Function)
   const store = createStore()
   it('creates a store', store)
 })
 
-describe('store', it => {
+test('store', it => {
 
   const store = createStore()
   const properties = [
@@ -42,7 +43,7 @@ describe('store', it => {
   properties.forEach(key => assert(`store.${key} exists`, store[key]))
 })
 
-describe('store.setState', it => {
+test('store.setState', it => {
 
   const store = createStore()
 
@@ -55,7 +56,7 @@ describe('store.setState', it => {
   it('preserves unchaged objects', store.state.sameObj===sameObj)
 })
 
-describe('store[action]', it => {
+test('store[action]', it => {
   const oldState = { index: 0 }
   const store = createStore({
     state: oldState,
@@ -72,7 +73,7 @@ describe('store[action]', it => {
   it('does not mutate state key', store.state.index!==oldState.index)
 })
 
-describe('onSetState', it => {
+test('onSetState', it => {
 
   let called = false
   let calledWithValue = 0
@@ -91,7 +92,7 @@ describe('onSetState', it => {
   it('is called on setState with fresh state', calledWithValue===1)
 })
 
-describe('store[childStore]', it => {
+test('store[childStore]', it => {
 
   let called = false
   let childCalled = false
