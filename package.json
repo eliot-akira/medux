@@ -9,7 +9,7 @@
     "test": "yarn build && node build/test",
     "type": "tsc",
     "clean": "rm -rf build",
-    "release": "yarn build && yarn types && cp package.json build && cp readme.md build && cd build && npm publish"
+    "release": "yarn build && yarn type && cp package.json build && cp readme.md build && cd build && npm publish"
   },
   "dependencies": {
     "immer": "5.x"
