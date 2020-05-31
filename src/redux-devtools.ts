@@ -1,5 +1,9 @@
 import { State, Store } from './types'
 
+declare var window: {
+  [key: string]: any
+}
+
 /**
  * @see https://github.com/zalmoxisus/redux-devtools-extension/blob/master/docs/
  */
@@ -18,7 +22,7 @@ const broadcasters: {
 
 export function connectReduxDevTools(name: string | Store, store?: Store | any, options: any = {}): Store {
 
-  if (!ReduxDevTools) return
+  if (!ReduxDevTools) return store
 
   if (typeof name!=='string') {
     // connectReduxDevTools(store, options)

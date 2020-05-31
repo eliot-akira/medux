@@ -15,10 +15,11 @@ export type Context = {
 }
 
 export type StateCreator = () => State
+export type StateUpdater = (state: State) => void
 export type SetStateCallback = () => any
 
 export type StateGetter = () => State
-export type StateSetter = (newState: State, callback?: SetStateCallback) => void
+export type StateSetter = (newState: State, callback?: SetStateCallback) => State
 
 export type ActionsCreatorProps = {
   parentKey?: string

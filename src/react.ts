@@ -1,11 +1,14 @@
-import { useState, useMemo, useRef } from 'react'
+import immer from 'immer'
+import { useState, useMemo } from 'react'
 import { createEventEmitter } from './event'
 import { createActions } from './action'
 import {
   State,
-  StateGetter, StateSetter,
+  StateGetter,
+  StateSetter,
+  StateUpdater,
   SetStateCallback,
-  Actions, ActionListener,
+  Actions,
   Store,
   StoreCreator,
   StoreCreatorProps
@@ -29,12 +32,15 @@ export const useStore: StoreCreator = (props: StoreCreatorProps): Store => {
 
     const store = createEventEmitter() as Store
     const getState: StateGetter = () => store.state
-    const setState: StateSetter = (stateProps: State, callback: SetStateCallback): State => {
+    const setState: StateSetter = (stateProps: State | StateUpdater, callback?: SetStateCallback): State => {
 
-      const newState = {
-        ...getState(),
-        ...stateProps
-      }
+      // Immutable state updates
+      const newState = immer<State>(getState(), stateProps instanceof Function
+        ? stateProps
+        : draft => {
+          Object.assign(draft, stateProps)
+        }
+      )
 
       setStoreState(newState)
 
