@@ -2,16 +2,16 @@ import { useState } from 'react'
 import { createStore } from './index'
 import {
   Store,
-  StoreCreator,
   StoreCreatorProps
 } from './types'
 
-export const useStore: StoreCreator = (props: StoreCreatorProps & { store: Store }): Store => {
+export const useStore = (props: StoreCreatorProps & { store: Store }): Store => {
 
   const store = props.store || createStore(props)
-  const [_, setState] = useState(store.state)
+  const [state, setState] = useState({})
 
-  store.on('state', setState)
+  store.on('state', () => setState({}))
+  state // Ignore: store.state is the single source of truth
 
   return store
 }
