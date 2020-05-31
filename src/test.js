@@ -1,24 +1,5 @@
+import { test, runTests } from 'testra'
 import createStore from './index'
-
-// Tester
-
-const results = { success: 0, fail: 0 }
-
-const assert = (title, result) => {
-  console.log(`  ${result ? '✓' : '✕'}`, title)
-  results[ result ? 'success' : 'fail' ]++
-}
-
-const test = (title, fn) => {
-  console.log(title)
-  return fn(assert)
-}
-
-const report = () => {
-  const { success, fail } = results
-  if (success) console.log(success, `test${ success > 1 ? 's' : '' } passed`)
-  if (fail) console.log(fail, `test${ fail > 1 ? 's' : '' } failed`)
-}
 
 // Tests
 
@@ -73,17 +54,18 @@ test('store[action]', it => {
   it('does not mutate state key', store.state.index!==oldState.index)
 })
 
-test('onSetState', it => {
+test('on(\'setState\')', it => {
 
   let called = false
   let calledWithValue = 0
 
   const store = createStore({
-    state: { index: 0 },
-    onSetState(store) {
-      called = true
-      calledWithValue = store.state.index
-    }
+    state: { index: 0 }
+  })
+
+  store.on('setState', (store) => {
+    called = true
+    calledWithValue = store.state.index
   })
 
   store.setState({ index: 1 })
@@ -92,7 +74,7 @@ test('onSetState', it => {
   it('is called on setState with fresh state', calledWithValue===1)
 })
 
-test('onAction', it => {
+test('on(\'action\')', it => {
 
   let called = false
   let calledWithKey
@@ -105,11 +87,12 @@ test('onAction', it => {
         draft.index += props
       })
     },
-    onAction(store, key, props) {
-      called = true
-      calledWithKey = key
-      calledWithProps = props
-    }
+  })
+
+  store.on('action', (store, key, props) => {
+    called = true
+    calledWithKey = key
+    calledWithProps = props
   })
 
   store.increment(2)
@@ -134,16 +117,16 @@ test('store[childStore]', it => {
   const store = createStore({
     ...storeProps,
     stores: {
-      child: {
-        ...storeProps,
-        onSetState(store) {
-          childCalled = true
-        }
-      }
+      child: storeProps
     },
-    onSetState(store) {
-      called = true
-    }
+  })
+
+  store.on('setState', (store) => {
+    called = true
+  })
+
+  store.child.on('setState', (store) => {
+    childCalled = true
   })
 
   it('is created', store.child)
@@ -165,8 +148,8 @@ test('store[childStore]', it => {
   it('action updates child store state', store.child.state.index===1)
   it('state update after action is shared by parent and child store', store.state.child===store.child.state)
 
-  it('action calls child onSetState', childCalled)
-  it('action calls parent onSetState', called)
+  it('action calls child setState', childCalled)
+  it('action calls parent setState', called)
 })
 
-report()
+export default runTests()

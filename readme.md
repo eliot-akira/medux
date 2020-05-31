@@ -11,15 +11,13 @@ yarn add medux
 ## Store
 
 ```js
-import createStore from 'medux'
+import { createStore } from 'medux'
 
-const storeProps = {
+const initState = {
+  count: 0
+}
 
-  state: {
-    count: 0
-  },  
-
-  actions: {
+const initActions = {
     increment(store, props = 1) {
       
       const currentState = store.state
@@ -37,18 +35,17 @@ const storeProps = {
 
     // Actions can be async
     async action(store, props) {}
-  },
-  
-  // Optional callbacks
-  onSetState(store) {},
-  onAction(store, key, props) {
-    console.log(`store.${key}`, props, store.state)
-  },
+  }
 }
 
-const store = createStore(storeProps)
+const store = createStore(initState, initActions)
 
-store.increment(5)
+store.on('action', (store, key, props) =>{
+  console.log('Action called', key, props)
+  console.log('State changed', store.state)
+})
+
+store.actions.increment(5)
 
 console.log(store.state) // { count: 5 }
 ```
@@ -68,52 +65,19 @@ store.state.count++ // Error, must use setState or action
 ## Child stores
 
 ```js
-const store = createStore({
-  ...storeProps,
-  stores: {
-    // Use any [key] for child store
-    child: childStoreProps
-  }
-})
-
-store.child.increment(5)
-
-console.log(store.state.child) // { count: 5 }
-```
-
-## React
-
-```js
-import withStore from 'medux/react'
-
-const storeProps = {
-
-  state: { count: 0 },
-
-  // To create fresh state every mount, use instead of state
-  createState: () => ({ count: 0 }),
-
-  actions: {
-    increment(store, props = 1) {
-      store.setState(draft => {
-        draft.count += props
-      })
-    }
-  },
-  
-  // Optional lifecycle methods, can be async
-  didMount(store, props) {},
-  willUnmount(store, props) {},
-  shouldUpdate(store, props, prevProps) {},
-  didUpdate(store, props) {}
+const parentState = {
+  child: childState
 }
 
-const Component = ({ store: { state, increment } }) =>
-  <button onClick={() => increment()}>
-    Increment: { state.count }
-  </button>
+const parentActions = {
+  child: childActions
+}
 
-export default withStore(storeProps)(Component)
+const store = createStore(parentState, parentActions)
+
+store.actions.child.increment(5)
+
+console.log(store.state.child) // { count: 5 }
 ```
 
 ## Redux DevTools
@@ -121,24 +85,63 @@ export default withStore(storeProps)(Component)
 ```js
 import connectReduxDevTools from 'medux/redux-devtools'
 
-connectReduxDevTools('Instance name', store)
+  const store = useStore(initState, initActions)
+
+  useEffect(() => {
+    connectReduxDevTools(store)
+  }, [])
+
+  return ..
+}
+```
+
+## React
+
+```js
+import { useStore } from 'medux/react'
+
+const Component = () => {
+
+  const store = useStore(initState, initActions)
+  const { state, actions } = store
+
+  return <button onClick={() => actions.increment()}>
+    Increment: { state.count }
+  </button>
+}
+```
+
+### React with Redux DevTools
+
+```js
+import { useEffect } from 'react'
+import { useStore } from 'medux/react'
+import connectReduxDevTools from 'medux/redux-devtools'
+
+const Component = () => {
+
+  const store = useStore(initState, initActions)
+
+  useEffect(() => {
+    connectReduxDevTools(store)
+  }, [])
+
+  return ..
+}
 ```
 
 With options for Redux DevTools
 
 ```js
-connectReduxDevTools('Instance name', store, options)
+connectReduxDevTools(store, options)
 ```
 
-With React
+With store instance name
 
 ```js
-const storeProps = {
-  didMount(store) {
-    connectReduxDevTools('Instance name', store)
-  }
-}
+connectReduxDevTools('App', store, options)
 ```
+
 
 ## Develop this library
 
@@ -148,7 +151,7 @@ Install dependencies
 yarn
 ```
 
-Develop: Watch files, recompile and test on changes
+Develop: Watch files; Recompile, type check and test on changes
 
 ```sh
 yarn dev
@@ -161,7 +164,6 @@ yarn build
 ```
 
 Publish to NPM
-
 
 ```sh
 npm run release

@@ -1,36 +1,51 @@
+import { EventEmitter } from './event'
 
 export type State = {
   [key: string]: any
 }
 
-export type StateCreator = (store: Store, ...args: any[]) => State
-export type StateUpdater = (state: State) => any
-
-export type Store = {
-  state: State
-  getState: () => State
-  setState: (newState: State | StateUpdater, update?: boolean) => State
-  broadcast?: (store: Store, key: string, props: any) => any
-  [key: string]: Action | any
-}
-
-export type Action = (store: Store, props: any) => any
+export type Action = (storeProps: StoreProps, ...args: any[]) => any
 
 export type Actions = {
-  [key: string]: Action
+  [key: string]: Action | Actions
 }
 
+export type Context = {
+  [key: string]: any
+}
+
+export type StateCreator = () => State
+export type SetStateCallback = () => any
+
+export type StateGetter = () => State
+export type StateSetter = (newState: State, callback?: SetStateCallback) => void
+
+export type ActionsCreatorProps = {
+  parentKey?: string
+  actions: Actions
+  getState: StateGetter
+  setState: StateSetter
+  onAction: ActionListener
+  context?: Context
+}
+
+export type ActionsCreator = (props: ActionsCreatorProps) => Actions
+export type ActionListener = (actionKey: string, actionProps: any, ...args: any[]) => void
+
+export type Store = StoreProps & EventEmitter
+
 export type StoreProps = {
+  context: Context
+  state: State
+  getState: StateGetter
+  setState: StateSetter
+  actions: Actions
+}
+
+export type StoreCreator = (props: StoreCreatorProps) => Store
+export type StoreCreatorProps = {
   state?: State
-  createState?: StateCreator
-  actions?: Actions
-
-  onSetState?: (store: Store, props: any) => any
-  onAction?: (store: Store, key: string, props: any) => any
-
-  stores?: {
-    [key: string]: Store
-  }
-
-  actionKey?: string
+  createState?: StateCreator,
+  actions: Actions,
+  context?: Context
 }
