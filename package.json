@@ -1,13 +1,13 @@
 {
   "name": "medux",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Medux: Modular immutable state management",
   "main": "index.js",
   "scripts": {
     "dev": "babel src --out-dir build --extensions \".js,.ts,.tsx\" --watch & sleep 3 && nodemon --watch build build/test",
     "build": "babel src --out-dir build --extensions \".js,.ts,.tsx\"",
-    "test": "node build/test",
-    "types": "tsc",
+    "test": "yarn build && node build/test",
+    "type": "tsc",
     "clean": "rm -rf build",
     "release": "yarn build && yarn types && cp package.json build && cp readme.md build && cd build && npm publish"
   },
