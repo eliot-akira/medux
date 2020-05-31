@@ -13,14 +13,16 @@ yarn add medux
 ```js
 import { createStore } from 'medux'
 
-const initState = {
-  count: 0
-}
+const storeProps = {
 
-const initActions = {
+  createState: () => ({
+    count: 0
+  }),
+  
+  actions: {
     increment(num = 1) {
-      
-      // Actions have `this` bound to the store
+
+      // `this` has getState, setState, actions
 
       // Produce new state by modifying draft
       this.setState(draft => {
@@ -36,14 +38,14 @@ const initActions = {
       this.actions.action()
     },
 
-    // Actions can be async
+    // Action can be async
     async action(props) {}
-  }
+  }  
 }
 
-const store = createStore(initState, initActions)
+const store = createStore(storeProps)
 
-store.on('action', (store, key, props) =>{
+store.on('action', (key, props) =>{
   console.log('Action called', key, props)
   console.log('State changed', store.state)
 })
@@ -58,7 +60,7 @@ console.log(store.state) // { count: 5 }
 ```js
 const oldState = store.state
 
-store.increment(5)
+store.actions.increment(5)
 
 const newState = store.state // oldState !== newState
 
@@ -68,15 +70,18 @@ store.state.count++ // Error, must use setState or action
 ## Child stores
 
 ```js
-const parentState = {
-  child: childState
-}
+const store = createStore({
+  
+  createState: () => ({
+    ...parentState,
+    child: childState
+  }),
 
-const parentActions = {
-  child: childActions
-}
-
-const store = createStore(parentState, parentActions)
+  actions: {
+    ...parentActions,
+    child: childActions
+  }
+})
 
 store.actions.child.increment(5)
 
@@ -88,7 +93,7 @@ console.log(store.state.child) // { count: 5 }
 ```js
 import connectReduxDevTools from 'medux/redux-devtools'
 
-  const store = useStore(initState, initActions)
+  const store = useStore(storeProps)
 
   useEffect(() => {
     connectReduxDevTools(store)
@@ -105,7 +110,7 @@ import { useStore } from 'medux/react'
 
 const Component = () => {
 
-  const store = useStore(initState, initActions)
+  const store = useStore(storeProps)
   const { state, actions } = store
 
   return <button onClick={() => actions.increment()}>
@@ -123,7 +128,7 @@ import connectReduxDevTools from 'medux/redux-devtools'
 
 const Component = () => {
 
-  const store = useStore(initState, initActions)
+  const store = useStore(storeProps)
 
   useEffect(() => {
     connectReduxDevTools(store)

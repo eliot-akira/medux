@@ -40,7 +40,7 @@ test('store.setState', it => {
 test('store.actions[action]', it => {
   const oldState = { index: 0 }
   const store = createStore({
-    state: oldState,
+    createState: () => oldState,
     actions: {
       increment() {
         this.setState({ index: store.state.index+1 })
@@ -109,12 +109,12 @@ test('child state and actions', it => {
   let called = false
   let childCalled = false
   const storeProps = {
-    state: {
+    createState: () => ({
       index: 0,
       child: {
         index: 0
       }
-    },
+    }),
     actions: {
       increment() {
         this.setState({ index: this.state.index + 1 })

@@ -24,6 +24,7 @@ export type StateSetter = (newState: State, callback?: SetStateCallback) => Stat
 export type ActionsCreatorProps = {
   parentKey?: string
   actions: Actions
+  createState: StateCreator
   getState: StateGetter
   setState: StateSetter
   onAction: ActionListener

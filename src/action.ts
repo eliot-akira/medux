@@ -8,6 +8,7 @@ import {
 
 export const createActions: ActionsCreator = ({
   actions,
+  createState,
   getState,
   setState,
   context,
@@ -22,6 +23,7 @@ export const createActions: ActionsCreator = ({
     ? (props: any, ...args: any[]) => (actions[key] as Action).call({
       actions: obj,
       state: getState(),
+      createState,
       getState,
       // Wrap setState for onAction callback
       setState: (newState: State, callback?: SetStateCallback) => setState(newState, () => {
@@ -35,6 +37,7 @@ export const createActions: ActionsCreator = ({
     : typeof actions[key]==='object'
       ? createActions({
         actions: actions[key] as Actions,
+        createState: () => createState()[key],
         getState: () => getState()[key],
         setState: (childState, callback) => setState({
           [key]: {

@@ -16,7 +16,9 @@ export const createStore: StoreCreator = (props?: StoreCreatorProps): Store => {
 
   const {
     state: initState,
-    createState = () => ({}),
+    createState = () => initState
+      ? JSON.parse(JSON.stringify(initState)) // Fast deep clone
+      : {},
     actions: initActions = {},
     context = {}
   } = props || {}
@@ -45,6 +47,7 @@ export const createStore: StoreCreator = (props?: StoreCreatorProps): Store => {
   }
   const actions: Actions = createActions({
     actions: initActions,
+    createState,
     getState,
     setState,
     onAction: (...args) => store.emit('action', ...args),
@@ -54,6 +57,7 @@ export const createStore: StoreCreator = (props?: StoreCreatorProps): Store => {
   return Object.assign(store, {
     context,
     state,
+    createState,
     getState,
     setState,
     actions
