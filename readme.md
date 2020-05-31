@@ -18,23 +18,26 @@ const initState = {
 }
 
 const initActions = {
-    increment(store, props = 1) {
+    increment(num = 1) {
       
-      const currentState = store.state
+      // Actions have `this` bound to the store
 
-      store.setState(draft => {
+      // Produce new state by modifying draft
+      this.setState(draft => {
+        draft.count += num
+      })
 
-        // Produce new state by modifying draft
-
-        draft.count += props
+      // ..or merge into new state
+      this.setState({
+        count: this.state.count + 1
       })
 
       // Optionally call other actions
-      store.action()
+      this.actions.action()
     },
 
     // Actions can be async
-    async action(store, props) {}
+    async action(props) {}
   }
 }
 
