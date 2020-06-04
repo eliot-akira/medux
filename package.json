@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "babel src --out-dir build --extensions \".js,.ts,.tsx\" --watch & sleep 3 && nodemon --watch build build/test",
-    "build": "babel src --out-dir build --extensions \".js,.ts,.tsx\"",
+    "build": "babel src --out-dir build --extensions \".js,.ts,.tsx\" && yarn type",
     "test": "yarn build && node build/test",
     "type": "tsc",
     "clean": "rm -rf build",
-    "release": "yarn build && yarn type && cp package.json build && cp readme.md build && cd build && npm publish"
+    "release": "yarn build && cp package.json build && cp readme.md build && cd build && npm publish"
   },
   "dependencies": {
     "immer": "5.x"
