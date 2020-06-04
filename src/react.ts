@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { createStore } from './index'
 import {
   Store,
@@ -7,11 +7,20 @@ import {
 
 export const useStore = (props: StoreCreatorProps & { store: Store }): Store => {
 
-  const store = props.store || createStore(props)
+  // Minimal wrapper to re-render on setState
+
   const [state, setState] = useState({})
 
-  store.on('state', () => setState({}))
   state // Ignore: store.state is the single source of truth
+
+  const store = useMemo(() => {
+
+    const store = props.store || createStore(props)
+
+    store.on('state', () => setState({}))
+
+    return store
+  }, [])
 
   return store
 }
