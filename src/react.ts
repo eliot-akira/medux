@@ -5,7 +5,7 @@ import {
   StoreCreatorProps
 } from './types'
 
-export const useStore = (props: StoreCreatorProps & { store: Store }): Store => {
+export const useStore = (props: StoreCreatorProps): Store => {
 
   // Minimal wrapper to re-render on setState
 

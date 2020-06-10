@@ -93,17 +93,14 @@ console.log(store.state.child) // { count: 5 }
 ```js
 import connectReduxDevTools from 'medux/redux-devtools'
 
-  const store = useStore(storeProps)
+const store = useStore(storeProps)
 
-  useEffect(() => {
-    connectReduxDevTools(store)
-  }, [])
-
-  return ..
-}
+connectReduxDevTools(store)
 ```
 
 ## React
+
+The method `useStore` connects a component to a store, to render on state changes.
 
 ```js
 import { useStore } from 'medux/react'
@@ -111,6 +108,25 @@ import { useStore } from 'medux/react'
 const Component = () => {
 
   const store = useStore(storeProps)
+  const { state, actions } = store
+
+  return <button onClick={() => actions.increment()}>
+    Increment: { state.count }
+  </button>
+}
+```
+
+The store can also be created outside the component, and passed to `useStore`.
+
+```js
+import { createStore } from 'medux'
+import { useStore } from 'medux/react'
+
+const store = createStore(storeProps)
+
+const Component = () => {
+
+  useStore({ store })
   const { state, actions } = store
 
   return <button onClick={() => actions.increment()}>

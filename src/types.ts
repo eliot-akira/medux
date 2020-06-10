@@ -22,12 +22,12 @@ export type StateGetter = () => State
 export type StateSetter = (newState: State, callback?: SetStateCallback) => State
 
 export type ActionsCreatorProps = {
-  parentKey?: string
-  actions: Actions
-  createState: StateCreator
-  getState: StateGetter
-  setState: StateSetter
-  onAction: ActionListener
+  parentKey?: string,
+  actions: Actions,
+  createState: StateCreator,
+  getState: StateGetter,
+  setState: StateSetter,
+  onAction: ActionListener,
   context?: Context
 }
 
@@ -37,17 +37,18 @@ export type ActionListener = (actionKey: string, actionProps: any, ...args: any[
 export type Store = StoreProps & EventEmitter
 
 export type StoreProps = {
-  context: Context
-  state: State
-  getState: StateGetter
-  setState: StateSetter
+  context: Context,
+  state: State,
+  getState: StateGetter,
+  setState: StateSetter,
   actions: Actions
 }
 
 export type StoreCreator = (props: StoreCreatorProps) => Store
 export type StoreCreatorProps = {
-  state?: State
+  state?: State,
   createState?: StateCreator,
   actions: Actions,
-  context?: Context
+  context?: Context,
+  store?: Store // Already created store
 }

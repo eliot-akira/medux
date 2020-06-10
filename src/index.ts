@@ -1,7 +1,7 @@
 import immer from 'immer'
 import { createEventEmitter } from './event'
 import { createActions } from './action'
-import {
+import type {
   State,
   StateSetter,
   StateUpdater,
@@ -11,6 +11,8 @@ import {
   StoreCreator,
   StoreCreatorProps
 } from './types'
+
+export * from './types'
 
 export const createStore: StoreCreator = (props?: StoreCreatorProps): Store => {
 
