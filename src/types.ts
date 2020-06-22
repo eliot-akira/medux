@@ -4,7 +4,7 @@ export type State = {
   [key: string]: any
 }
 
-export type Action = (storeProps: StoreProps, ...args: any[]) => any
+export type Action = (this: ActionContext, ...args: any[]) => any
 
 export type Actions = {
   [key: string]: Action | Actions
@@ -34,6 +34,14 @@ export type ActionsCreatorProps = {
 export type ActionsCreator = (props: ActionsCreatorProps) => Actions
 export type ActionListener = (actionKey: string, actionProps: any, ...args: any[]) => void
 
+export type ActionContext = {
+  context: Context,
+  state: State,
+  getState: StateGetter,
+  setState: StateSetter,
+  actions: Actions
+}
+
 export type Store = StoreProps & EventEmitter
 
 export type StoreProps = {
@@ -48,7 +56,7 @@ export type StoreCreator = (props: StoreCreatorProps) => Store
 export type StoreCreatorProps = {
   state?: State,
   createState?: StateCreator,
-  actions: Actions,
+  actions?: Actions,
   context?: Context,
   store?: Store // Already created store
 }

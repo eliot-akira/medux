@@ -2,6 +2,7 @@ import {
   ActionsCreator,
   Actions,
   Action,
+  ActionContext,
   State,
   SetStateCallback
 } from './types'
@@ -31,7 +32,7 @@ export const createActions: ActionsCreator = ({
         onAction(actionKey, props, ...args)
       }),
       context,
-    }, props, ...args)
+    } as ActionContext, props, ...args)
 
     // Child actions operate on a slice of state
     : typeof actions[key]==='object'
