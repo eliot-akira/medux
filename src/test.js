@@ -37,6 +37,19 @@ test('store.setState', it => {
   it('preserves unchaged objects', store.state.sameObj===sameObj)
 })
 
+test('store.setState(state, false)', it => {
+
+  const store = createStore()
+
+  // Silent setState
+  let called = false
+  store.on('state', () => called = true)
+  store.setState({ index: -1 }, false)
+
+  it('updates state silently when callback is false', store.state.index===-1)
+  it('does not emit state event when callback is false', !called)
+})
+
 test('store.actions[action]', it => {
   const oldState = { index: 0 }
   const store = createStore({
