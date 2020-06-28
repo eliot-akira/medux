@@ -12,45 +12,64 @@ export const createActions: ActionsCreator = ({
   createState,
   getState,
   setState,
-  context,
+  context = {},
   onAction,
   parentKey = ''
-}) => Object.keys(actions).reduce((obj, key) => {
+}) => {
 
-  const actionKey = (parentKey ? parentKey+'.' : '') + key
+  const boundActions: Actions = {}
 
-  obj[key] = actions[key] instanceof Function
-    // Bind action to pass store props as `this`
-    ? (props: any, ...args: any[]) => (actions[key] as Action).call({
-      actions: obj,
-      state: getState(),
-      createState,
-      getState,
-      // Wrap setState for onAction callback
-      setState: (newState: State, callback?: SetStateCallback) => setState(newState, () => {
-        callback && callback()
-        onAction(actionKey, props, ...args)
-      }),
-      context,
-    } as ActionContext, props, ...args)
+  const actionContext: ActionContext = {
+    state: getState(),
+    createState,
+    getState,
+    setState,
+    actions: boundActions,
+    context,
+  }
+
+  return Object.keys(actions).reduce((obj, key) => {
+
+    const actionKey = (parentKey ? parentKey+'.' : '') + key
+
+    if (actions[key] instanceof Function) {
+
+      // Bind action to pass store props as `this`
+      obj[key] = (props: any, ...args: any[]) => (actions[key] as Action).call(
+        // Keep reference to same context
+        Object.assign(actionContext, {
+          state: getState(),
+          // Wrap setState for onAction callback
+          setState: (newState: State, callback?: SetStateCallback) => {
+            const result = setState(newState, callback)
+            onAction && onAction(actionKey, props, ...args)
+            return result
+          },
+        }),
+        props, ...args
+      )
+
+      return obj
+    }
 
     // Child actions operate on a slice of state
-    : typeof actions[key]==='object'
-      ? createActions({
-        actions: actions[key] as Actions,
-        createState: () => createState()[key],
-        getState: () => getState()[key],
-        setState: (childState, callback) => setState({
-          [key]: {
-            ...getState()[key],
-            ...childState
-          }
-        }, callback),
-        context,
-        onAction,
-        parentKey: actionKey
-      })
-      : actions[key] // Unknown action type
+    obj[key] = typeof actions[key]==='object'
+        ? createActions({
+          actions: actions[key] as Actions,
+          createState: () => createState()[key],
+          getState: () => getState()[key],
+          setState: (childState, callback) => setState({
+            [key]: {
+              ...getState()[key],
+              ...childState
+            }
+          }, callback),
+          context,
+          onAction,
+          parentKey: actionKey
+        })
+        : actions[key] // Unknown action type
 
-  return obj
-}, {} as Actions)
+    return obj
+  }, boundActions)
+}
