@@ -14,11 +14,8 @@ export const useStore = (props: StoreCreatorProps): Store => {
   state // Ignore: store.state is the single source of truth
 
   const store = useMemo(() => {
-
     const store = props.store || createStore(props)
-
     store.on('state', () => setState({}))
-
     return store
   }, [])
 
