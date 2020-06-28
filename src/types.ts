@@ -16,7 +16,7 @@ export type Context = {
 
 export type StateCreator = () => State
 export type StateUpdater = (state: State) => void
-export type SetStateCallback = () => any
+export type SetStateCallback = (() => any) | false
 
 export type StateGetter = () => State
 export type StateSetter = (newState: State, callback?: SetStateCallback) => State
@@ -39,6 +39,7 @@ export type ActionContext = {
   state: State,
   getState: StateGetter,
   setState: StateSetter,
+  createState: StateCreator,
   actions: Actions
 }
 
@@ -58,5 +59,6 @@ export type StoreCreatorProps = {
   createState?: StateCreator,
   actions?: Actions,
   context?: Context,
-  store?: Store // Already created store
+  store?: Store, // Already created store
+  updateState?: (state: State, stateProps: State | StateUpdater) => State
 }
