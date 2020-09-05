@@ -1,6 +1,6 @@
 {
   "name": "medux",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "Medux: Modular immutable state management",
   "main": "index.js",
   "scripts": {
