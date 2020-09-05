@@ -77,6 +77,48 @@ import { createStore } from 'medux/core'
 
 It has the same interface, but instead of using `immer`, it will mutate the store's state with `Object.assign`. This is simpler and faster, but does not have the benefits of immutability.
 
+### Context
+
+For the `createStore` function, one can pass a property `context` with an object.
+
+```js
+
+const storeContext = {}
+
+createStore({
+  context: storeContext
+})
+```
+
+This is available to actions as `this.context`.
+
+
+### Events
+
+The store instance is an event emitter with methods `on`, `off`, and `emit`.
+
+They can be accessed from actions as `this.on`, `this.off`, `this.emit`.
+
+```js
+
+const handler = data => {}
+
+// Subscribe
+store.on('eventName', handler)
+
+// Unsubscribe
+store.off('eventName', handler)
+
+// Emit event
+
+const data = {}
+
+store.emit('eventName', data)
+```
+
+The `on` function returns an unsubscriber, which can be called with no arguments.
+
+
 ## Child stores
 
 ```js
