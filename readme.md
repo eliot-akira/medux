@@ -67,6 +67,16 @@ const newState = store.state // oldState !== newState
 store.state.count++ // Error, must use setState or action
 ```
 
+### Core
+
+If immutability is not needed, there's a much smaller core that can be imported.
+
+```js
+import { createStore } from 'medux/core'
+```
+
+It has the same interface, but instead of using `immer`, it will mutate the store's state with `Object.assign`. This is simpler and faster, but does not have the benefits of immutability.
+
 ## Child stores
 
 ```js
