@@ -1,4 +1,4 @@
-import { createEventEmitter } from './event'
+import { createEventEmitter, EventEmitter } from './event'
 import { createActions } from './action'
 import type {
   State,
@@ -53,7 +53,8 @@ export const createStore: StoreCreator = (props?: StoreCreatorProps): Store => {
     getState,
     setState,
     onAction: (...args) => store.emit('action', ...args),
-    context
+    context, // Pass to actions as this.context
+    emitter: store as EventEmitter // Pass to actions as this[ method ]
   })
 
   return Object.assign(store, {

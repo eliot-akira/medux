@@ -167,4 +167,40 @@ test('child state and actions', it => {
   it('action calls parent setState', called)
 })
 
+
+test('action context', it => {
+
+  const store = createStore({
+    state: {},
+    actions: {
+      test() {
+
+        it('has this', !!this)
+
+        ;['on', 'off', 'emit'].forEach(key =>
+          it(`has this.${key}`, !!this[ key ])
+        )
+
+        let eventCalled = false
+
+        this.on('event', () => {
+          eventCalled = true
+        })
+
+        try {
+          this.emit('event')
+          it('can call this.emit', true)
+        } catch (error) {
+          it('can call this.emit', false)
+        }
+
+        it('calls event handler', eventCalled)
+      }
+    }
+  })
+
+  store.actions.test()
+
+})
+
 export default runTests()

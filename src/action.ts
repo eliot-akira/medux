@@ -14,12 +14,14 @@ export const createActions: ActionsCreator = ({
   setState,
   context = {},
   onAction,
-  parentKey = ''
+  parentKey = '',
+  emitter = {},
 }) => {
 
   const boundActions: Actions = {}
 
   const actionContext: ActionContext = {
+    ...emitter, // Pass event emitter methods
     state: getState(),
     createState,
     getState,

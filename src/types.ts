@@ -28,7 +28,8 @@ export type ActionsCreatorProps = {
   getState: StateGetter,
   setState: StateSetter,
   onAction: ActionListener,
-  context?: Context
+  context?: Context,
+  emitter?: EventEmitter
 }
 
 export type ActionsCreator = (props: ActionsCreatorProps) => Actions
