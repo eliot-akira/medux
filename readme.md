@@ -143,7 +143,7 @@ console.log(store.state.child) // { count: 5 }
 ## Redux DevTools
 
 ```js
-import connectReduxDevTools from 'medux/redux-devtools'
+import { connectReduxDevTools } from 'medux/redux-devtools'
 
 const store = useStore(storeProps)
 
@@ -192,7 +192,7 @@ const Component = () => {
 ```js
 import { useEffect } from 'react'
 import { useStore } from 'medux/react'
-import connectReduxDevTools from 'medux/redux-devtools'
+import { connectReduxDevTools } from 'medux/redux-devtools'
 
 const Component = () => {
 
