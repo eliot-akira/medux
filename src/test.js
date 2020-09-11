@@ -1,5 +1,8 @@
 import { test, runTests } from 'testra'
-import { createStore } from './index'
+import {
+  createStore,
+  composeStore
+} from './index'
 
 // Tests
 
@@ -23,6 +26,8 @@ test('store', it => {
 
   properties.forEach(key => it(`store.${key} exists`, store[key]))
 })
+
+// State
 
 test('store.setState', it => {
 
@@ -50,6 +55,8 @@ test('store.setState(state, false)', it => {
   it('does not emit state event when callback is false', !called)
 })
 
+// Actions
+
 test('store.actions[action]', it => {
   const oldState = { index: 0 }
   const store = createStore({
@@ -66,6 +73,8 @@ test('store.actions[action]', it => {
   it('does not mutate state', store.state!==oldState)
   it('does not mutate state key', store.state.index!==oldState.index)
 })
+
+// Events
 
 test('on(\'state\')', it => {
 
@@ -117,6 +126,8 @@ test('on(\'action\')', it => {
   it('is called on action with props', calledWithProps===2)
 })
 
+// Child
+
 test('child state and actions', it => {
 
   let called = false
@@ -167,6 +178,7 @@ test('child state and actions', it => {
   it('action calls parent setState', called)
 })
 
+// Context
 
 test('action context', it => {
 
@@ -200,7 +212,60 @@ test('action context', it => {
   })
 
   store.actions.test()
+})
 
+// Compose
+
+test('composeStore', it => {
+
+  const positive = {
+    createState: () => ({
+      positive: 1
+    }),
+    actions: {
+      add() {
+        this.setState({
+          positive: this.state.positive + 1
+        })
+      }
+    }
+  }
+
+  let testActionContext
+  const negative = {
+    createState: () => ({
+      negative: -1
+    }),
+    actions: {
+      subtract() {
+        this.setState({
+          negative: this.state.negative - 1
+        })
+        testActionContext = this.context
+      }
+    }
+  }
+
+  const context = { key: 123 }
+  const store = composeStore([
+    positive,
+    negative
+  ], context)
+
+  it('creates a store from an array of store props', store && store.state && store.actions)
+  it('store has given state properties', store.state.positive===1 && store.state.negative===-1)
+  it('store has given actions', store.actions.add && store.actions.subtract)
+  it('store has given context', store.context.key===123)
+
+  store.actions.add()
+  store.actions.subtract()
+
+  it('store actions set their state',
+    store.state.positive===2
+    && store.state.negative===-2
+  )
+
+  it('action has this.context', testActionContext && testActionContext.key===123)
 })
 
 export default runTests()

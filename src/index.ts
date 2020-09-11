@@ -1,5 +1,8 @@
 import immer from 'immer'
-import { createStore as createGenericStore } from './core'
+import {
+  createStore as createGenericStore,
+  composeStore as composeGenericStore
+} from './core'
 import type {
   State,
   StateUpdater,
@@ -19,9 +22,11 @@ const updateState = (state: State, stateProps: State | StateUpdater): State =>
     }
   )
 
-export const createStore: StoreCreator = (props: StoreCreatorProps = {}): Store => {
-  return createGenericStore({
+export const createStore: StoreCreator = (props: StoreCreatorProps = {}): Store =>
+  createGenericStore({
     ...props,
     updateState
   })
-}
+
+export const composeStore = (stores: StoreCreatorProps[], context = {}): Store =>
+  composeGenericStore(stores, context, createStore)

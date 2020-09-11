@@ -140,6 +140,31 @@ store.actions.child.increment(5)
 console.log(store.state.child) // { count: 5 }
 ```
 
+## Compose stores
+
+The method `composeStore` creates a store from an array of store props.
+
+This is a way to merge sets of states and actions.
+
+```js
+import { composeStore } from 'medux' // or medux/core
+
+const feature = {
+  state: {},
+  actions: {}
+}
+
+const anotherFeature = {
+  state: {},
+  actions: {}
+}
+
+const store = composeStore([
+  feature,
+  anotherFeature
+], context)
+```
+
 ## Redux DevTools
 
 ```js
@@ -167,6 +192,8 @@ const Component = () => {
   </button>
 }
 ```
+
+It also accepts an array of store props, in which case their states and actions will be merged using `composeStore`.
 
 The store can also be created outside the component, and passed to `useStore`.
 
