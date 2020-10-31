@@ -7,7 +7,7 @@ import type {
   StoreCreatorProps
 } from './types'
 
-export const composeStore = (stores: StoreCreatorProps[], context = {}, storeCreator = createStore): Store => {
+export const composeStoreProps = (stores: StoreCreatorProps[]) => {
 
   const createState: StateCreator = () => stores.reduce((obj: State, child: StoreCreatorProps) => {
     if (child.state) {
@@ -24,6 +24,19 @@ export const composeStore = (stores: StoreCreatorProps[], context = {}, storeCre
     }
     return obj
   }, {})
+
+  return {
+    createState,
+    actions
+  }
+}
+
+export const composeStore = (stores: StoreCreatorProps[], context = {}, storeCreator = createStore): Store => {
+
+  const {
+    createState,
+    actions
+  } = composeStoreProps(stores)
 
   return storeCreator({
     context,
