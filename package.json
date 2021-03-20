@@ -1,6 +1,6 @@
 {
   "name": "medux",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "description": "Medux: Modular immutable state management",
   "main": "index.js",
   "scripts": {
@@ -12,19 +12,19 @@
     "release": "yarn build && cp package.json build && cp readme.md build && cd build && npm publish"
   },
   "dependencies": {
-    "immer": "7.x"
+    "immer": "9.x"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.3",
-    "@babel/core": "^7.10.3",
-    "@babel/preset-env": "^7.10.3",
-    "@babel/preset-react": "^7.10.1",
-    "@types/react": "^16.9.38",
-    "babel-plugin-add-module-exports": "^1.0.2",
-    "concurrently": "^5.2.0",
-    "nodemon": "^2.0.4",
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.10",
+    "@babel/preset-env": "^7.13.10",
+    "@babel/preset-react": "^7.12.13",
+    "@types/react": "^17.0.3",
+    "babel-plugin-add-module-exports": "^1.0.4",
+    "concurrently": "^6.0.0",
+    "nodemon": "^2.0.7",
     "testra": "^1.1.0",
-    "typescript": "^3.9.5"
+    "typescript": "^4.2.3"
   },
   "license": "MIT",
   "author": "Eliot Akira",
